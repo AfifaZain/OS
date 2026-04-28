@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS Simulator Pro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- BOOT SCREEN -->
+<div id="bootScreen">
+    <div class="boot-logo">⬡ OS-SIM PRO</div>
+    <div class="boot-text" id="bootText"></div>
+    <div class="boot-bar"><div class="boot-progress"></div></div>
+</div>
+
+<!-- MAIN APP -->
+<div id="mainApp">
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-logo">
+            <div class="logo-icon">⬡</div>
+            OS-SIM PRO
+        </div>
+        <div class="nav-tabs">
+            <button class="nav-tab active"    onclick="showPage('dashboard', this)">🏠 DASHBOARD</button>
+            <button class="nav-tab"           onclick="showPage('cpu', this)">⚡ CPU SCHEDULER</button>
+            <button class="nav-tab"           onclick="showPage('memory', this)">🧠 MEMORY</button>
+            <button class="nav-tab"           onclick="showPage('paging', this)">📄 PAGING</button>
+            <button class="nav-tab"           onclick="showPage('disk', this)">💿 DISK</button>
+            <button class="nav-tab"           onclick="showPage('processes', this)">⚙️ PROCESSES</button>
+            <button class="nav-tab"           onclick="showPage('deadlock', this)">🔒 DEADLOCK</button>
+            <button class="nav-tab"           onclick="showPage('terminal', this)">💻 TERMINAL</button>
+        </div>
+        <div class="nav-status">
+            <!-- Theme Toggle -->
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode">🌙</button>
+            <span class="status-dot"></span>
+            <span id="sysTime">00:00:00</span>
+            <span>|</span>
+            <span id="cpuUsage">CPU: 0%</span>
+        </div>
+    </nav>
+
+    <!-- ============ DASHBOARD PAGE ============ -->
+    <div class="page active" id="page-dashboard">
+        <div class="dashboard-header">
+            <div class="dashboard-title">OS SIMULATOR PRO</div>
+            <div class="dashboard-subtitle">⬡ OPERATING SYSTEM CONCEPTS SIMULATOR ⬡</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card" style="--card-color: #00d4ff">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-value" id="dash-cpu">0%</div>
+                <div class="stat-label">CPU Usage</div>
+            </div>
+            <div class="stat-card" style="--card-color: #7c3aed">
+                <div class="stat-icon">🧠</div>
+                <div class="stat-value" id="dash-mem">0 MB</div>
+                <div class="stat-label">Memory Used</div>
+            </div>
+            <div class="stat-card" style="--card-color: #00ff88">
+                <div class="stat-icon">⚙️</div>
+                <div class="stat-value" id="dash-proc">0</div>
+                <div class="stat-label">Active Processes</div>
+            </div>
+            <div class="stat-card" style="--card-color: #ff6b35">
+                <div class="stat-icon">💿</div>
+                <div class="stat-value" id="dash-disk">0 ms</div>
+                <div class="stat-label">Disk Seek Time</div>
+            </div>
+        </div>
+
+        <div class="modules-grid">
+            <div class="module-card" onclick="showPage('cpu', null)" style="--mod-color: #00d4ff">
+                <div class="module-icon">⚡</div>
+                <div class="module-title">CPU SCHEDULER</div>
+                <div class="module-desc">Simulate FCFS, SJF, Priority, Round Robin scheduling algorithms with Gantt charts and performance metrics.</div>
+                <span class="module-badge" style="--mod-color:#00d4ff">FCFS · SJF · RR · PRIORITY</span>
+            </div>
+            <div class="module-card" onclick="showPage('memory', null)" style="--mod-color: #7c3aed">
+                <div class="module-icon">🧠</div>
+                <div class="module-title">MEMORY MANAGER</div>
+                <div class="module-desc">Visualize contiguous memory allocation with First Fit, Best Fit, and Worst Fit strategies. Track fragmentation.</div>
+                <span class="module-badge" style="--mod-color:#7c3aed">FIRST FIT · BEST FIT · WORST FIT</span>
+            </div>
+            <div class="module-card" onclick="showPage('paging', null)" style="--mod-color: #00ff88">
+                <div class="module-icon">📄</div>
+                <div class="module-title">PAGE REPLACEMENT</div>
+                <div class="module-desc">Simulate virtual memory page replacement algorithms and track page faults and hit ratios.</div>
+                <span class="module-badge" style="--mod-color:#00ff88">FIFO · LRU · OPTIMAL</span>
+            </div>
+            <div class="module-card" onclick="showPage('disk', null)" style="--mod-color: #ff6b35">
+                <div class="module-icon">💿</div>
+                <div class="module-title">DISK SCHEDULER</div>
+                <div class="module-desc">Visualize disk head movement with FCFS, SSTF, SCAN, C-SCAN scheduling algorithms.</div>
+                <span class="module-badge" style="--mod-color:#ff6b35">FCFS · SSTF · SCAN · C-SCAN</span>
+            </div>
+            <div class="module-card" onclick="showPage('processes', null)" style="--mod-color: #ffd700">
+                <div class="module-icon">⚙️</div>
+                <div class="module-title">PROCESS MANAGER</div>
+                <div class="module-desc">Monitor system processes, view states, manage process lifecycle from creation to termination.</div>
+                <span class="module-badge" style="--mod-color:#ffd700">FORK · EXEC · KILL · WAIT</span>
+            </div>
+            <div class="module-card" onclick="showPage('deadlock', null)" style="--mod-color: #ff006e">
+                <div class="module-icon">🔒</div>
+                <div class="module-title">DEADLOCK DETECTOR</div>
+                <div class="module-desc">Visualize Resource Allocation Graph, detect deadlocks using Banker's Algorithm.</div>
+                <span class="module-badge" style="--mod-color:#ff006e">BANKER'S · RAG · DETECTION</span>
+            </div>
+        </div>
+
+        <div class="two-col">
+            <div class="card">
+                <div class="card-title">📊 SYSTEM ACTIVITY LOG</div>
+                <div id="activityLog" style="font-size:12px; line-height:2; color: var(--text-secondary); max-height: 200px; overflow-y: auto;">
+                    <div><span class="text-green">✓</span> OS-SIM PRO initialized successfully</div>
+                    <div><span class="text-green">✓</span> Memory Manager module loaded</div>
+                    <div><span class="text-green">✓</span> CPU Scheduler module loaded</div>
+                    <div><span class="text-green">✓</span> Paging module loaded</div>
+                    <div><span class="text-green">✓</span> Disk Scheduler module loaded</div>
+                    <div><span class="text-green">✓</span> Process Manager initialized</div>
+                    <div><span class="text-green">✓</span> Deadlock Detector ready</div>
+                    <div><span class="text-blue">ℹ</span> System running — all modules operational</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">🖥️ SYSTEM INFO</div>
+                <div style="font-size: 12px; line-height: 2.2; color: var(--text-secondary);">
+                    <div class="flex-row" style="justify-content:space-between">
+                        <span>OS Version</span><span class="highlight">OS-SIM PRO v3.0</span>
+                    </div>
+                    <div class="flex-row" style="justify-content:space-between">
+                        <span>Kernel</span><span class="highlight">SimKernel 5.15</span>
+                    </div>
+                    <div class="flex-row" style="justify-content:space-between">
+                        <span>Architecture</span><span class="highlight">x86_64</span>
+                    </div>
+                    <div class="flex-row" style="justify-content:space-between">
+                        <span>Total RAM</span><span class="highlight">1024 MB</span>
+                    </div>
+                    <div class="flex-row" style="justify-content:space-between">
+                        <span>Scheduling Policy</span><span class="highlight">Round Robin</span>
+                    </div>
+                    <div class="flex-row" style="justify-content:space-between">
+                        <span>Page Size</span><span class="highlight">4 KB</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ CPU SCHEDULER PAGE ============ -->
+    <div class="page" id="page-cpu">
+        <div class="section-header">
+            <div class="section-title">⚡ CPU SCHEDULER</div>
+            <div class="section-line"></div>
+            <span class="badge badge-blue">SIMULATOR</span>
+        </div>
+        <div class="two-col">
+            <div>
+                <div class="card">
+                    <div class="card-title">⚙️ CONFIGURATION</div>
+                    <div class="form-group">
+                        <label class="form-label">Scheduling Algorithm</label>
+                        <select class="form-select" id="cpuAlgorithm" onchange="toggleQuantum()">
+                            <option value="fcfs">FCFS — First Come First Serve</option>
+                            <option value="sjf">SJF — Shortest Job First (Non-Preemptive)</option>
+                            <option value="sjfp">SRTF — Shortest Remaining Time First (Preemptive)</option>
+                            <option value="priority">Priority Scheduling (Non-Preemptive)</option>
+                            <option value="priorityp">Priority Scheduling (Preemptive)</option>
+                            <option value="rr">Round Robin</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="quantumGroup" style="display:none">
+                        <label class="form-label">Time Quantum</label>
+                        <input type="number" class="form-input" id="timeQuantum" value="2" min="1">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">➕ ADD PROCESS</div>
+                    <div class="three-col">
+                        <div class="form-group">
+                            <label class="form-label">Process Name</label>
+                            <input type="text" class="form-input" id="cpuPName" placeholder="P1" value="P1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Arrival Time</label>
+                            <input type="number" class="form-input" id="cpuArrival" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Burst Time</label>
+                            <input type="number" class="form-input" id="cpuBurst" value="5" min="1">
+                        </div>
+                    </div>
+                    <div class="two-col">
+                        <div class="form-group">
+                            <label class="form-label">Priority (lower = higher priority)</label>
+                            <input type="number" class="form-input" id="cpuPriority" value="1" min="1">
+                        </div>
+                        <div style="display:flex; align-items:flex-end; padding-bottom:15px; gap:10px">
+                            <button class="btn btn-success" onclick="addCPUProcess()" style="flex:1">➕ ADD</button>
+                            <button class="btn btn-secondary" onclick="loadSampleCPU()">📋 SAMPLE</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📋 PROCESS LIST</div>
+                    <table class="process-table" id="cpuProcessTable">
+                        <thead>
+                            <tr>
+                                <th>COLOR</th><th>NAME</th><th>ARRIVAL</th>
+                                <th>BURST</th><th>PRIORITY</th><th>ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cpuProcessBody"></tbody>
+                    </table>
+                    <div class="flex-row">
+                        <button class="btn btn-primary" onclick="runCPUScheduler()">▶ RUN SCHEDULER</button>
+                        <button class="btn btn-danger"  onclick="clearCPU()">🗑 CLEAR ALL</button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <div class="card-title">📊 GANTT CHART</div>
+                    <div class="gantt-container" id="ganttContainer">
+                        <div style="color:var(--text-muted);font-size:12px;text-align:center;padding:40px 0;">
+                            Add processes and run the scheduler to see the Gantt chart
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" id="cpuResultsCard" style="display:none">
+                    <div class="card-title">📈 PERFORMANCE METRICS</div>
+                    <table class="process-table" id="cpuResultsTable">
+                        <thead>
+                            <tr>
+                                <th>PROCESS</th><th>ARRIVAL</th><th>BURST</th>
+                                <th>FINISH</th><th>TAT</th><th>WT</th><th>RT</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cpuResultsBody"></tbody>
+                    </table>
+                    <div class="results-grid" id="cpuAvgResults"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📚 ALGORITHM INFO</div>
+                    <div id="algoInfo" style="font-size:12px; color:var(--text-secondary); line-height:2;">
+                        <div><span class="text-green bold">FCFS:</span> Processes executed in order of arrival. Simple but can cause convoy effect.</div>
+                        <div class="mt-10"><span class="highlight bold">Metrics:</span></div>
+                        <div>• <span class="text-green">TAT</span> = Finish Time − Arrival Time</div>
+                        <div>• <span class="text-green">WT</span>  = TAT − Burst Time</div>
+                        <div>• <span class="text-green">RT</span>  = First CPU access − Arrival Time</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ MEMORY PAGE ============ -->
+    <div class="page" id="page-memory">
+        <div class="section-header">
+            <div class="section-title">🧠 MEMORY MANAGER</div>
+            <div class="section-line"></div>
+            <span class="badge badge-blue">CONTIGUOUS ALLOCATION</span>
+        </div>
+        <div class="memory-container">
+            <div>
+                <div class="card">
+                    <div class="card-title">⚙️ MEMORY CONFIGURATION</div>
+                    <div class="form-group">
+                        <label class="form-label">Allocation Strategy</label>
+                        <select class="form-select" id="memStrategy">
+                            <option value="first">First Fit</option>
+                            <option value="best">Best Fit</option>
+                            <option value="worst">Worst Fit</option>
+                            <option value="next">Next Fit</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Total Memory Size (MB)</label>
+                        <input type="number" class="form-input" id="totalMemory" value="1024" min="128">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">OS Reserved (MB)</label>
+                        <input type="number" class="form-input" id="osMemory" value="128" min="32">
+                    </div>
+                    <button class="btn btn-primary" onclick="initMemory()" style="width:100%">🔄 INITIALIZE MEMORY</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">➕ ALLOCATE PROCESS</div>
+                    <div class="form-group">
+                        <label class="form-label">Process Name</label>
+                        <input type="text" class="form-input" id="memPName" placeholder="P1" value="P1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Process Size (MB)</label>
+                        <input type="number" class="form-input" id="memPSize" value="128" min="1">
+                    </div>
+                    <div class="flex-row">
+                        <button class="btn btn-success"   onclick="allocateMemory()" style="flex:1">📥 ALLOCATE</button>
+                        <button class="btn btn-secondary" onclick="loadSampleMemory()">📋 SAMPLE</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📋 ALLOCATED PROCESSES</div>
+                    <div id="memProcessList" style="font-size:12px; color:var(--text-secondary);">
+                        No processes allocated yet.
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📊 MEMORY STATISTICS</div>
+                    <div class="memory-stats-panel" id="memStats">
+                        <div class="mem-stat">
+                            <div class="mem-stat-val" id="memUsed">0</div>
+                            <div class="mem-stat-lbl">Used MB</div>
+                        </div>
+                        <div class="mem-stat">
+                            <div class="mem-stat-val" id="memFree">896</div>
+                            <div class="mem-stat-lbl">Free MB</div>
+                        </div>
+                        <div class="mem-stat">
+                            <div class="mem-stat-val" id="memFrag">0%</div>
+                            <div class="mem-stat-lbl">Fragmentation</div>
+                        </div>
+                        <div class="mem-stat">
+                            <div class="mem-stat-val" id="memProcs">0</div>
+                            <div class="mem-stat-lbl">Processes</div>
+                        </div>
+                    </div>
+                    <div class="mt-10">
+                        <button class="btn btn-secondary" onclick="compactMemory()" style="width:100%">🔧 COMPACT MEMORY</button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <div class="card-title">🗺️ MEMORY MAP</div>
+                    <div class="alert alert-info">
+                        <span>ℹ</span> Visual representation of physical memory. Each block represents allocated/free space.
+                    </div>
+                    <div class="memory-visual" id="memoryVisual">
+                        <div style="color:var(--text-muted);text-align:center;padding-top:150px;font-size:13px;">
+                            Click "Initialize Memory" to begin
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📚 STRATEGY COMPARISON</div>
+                    <table class="process-table">
+                        <thead>
+                            <tr><th>STRATEGY</th><th>SPEED</th><th>FRAGMENTATION</th><th>USE CASE</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="text-green bold">First Fit</span></td>
+                                <td><span class="badge badge-green">FAST</span></td>
+                                <td><span class="badge badge-yellow">MEDIUM</span></td>
+                                <td>General purpose</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-purple bold">Best Fit</span></td>
+                                <td><span class="badge badge-yellow">MEDIUM</span></td>
+                                <td><span class="badge badge-green">LOW</span></td>
+                                <td>Tight memory</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-orange bold">Worst Fit</span></td>
+                                <td><span class="badge badge-yellow">MEDIUM</span></td>
+                                <td><span class="badge badge-red">HIGH</span></td>
+                                <td>Large free holes</td>
+                            </tr>
+                            <tr>
+                                <td><span class="highlight bold">Next Fit</span></td>
+                                <td><span class="badge badge-green">FAST</span></td>
+                                <td><span class="badge badge-yellow">MEDIUM</span></td>
+                                <td>Sequential access</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ PAGING PAGE ============ -->
+    <div class="page" id="page-paging">
+        <div class="section-header">
+            <div class="section-title">📄 PAGE REPLACEMENT</div>
+            <div class="section-line"></div>
+            <span class="badge badge-blue">VIRTUAL MEMORY</span>
+        </div>
+        <div class="two-col">
+            <div>
+                <div class="card">
+                    <div class="card-title">⚙️ CONFIGURATION</div>
+                    <div class="form-group">
+                        <label class="form-label">Algorithm</label>
+                        <select class="form-select" id="pageAlgo">
+                            <option value="fifo">FIFO — First In First Out</option>
+                            <option value="lru">LRU — Least Recently Used</option>
+                            <option value="optimal">Optimal (Belady's)</option>
+                            <option value="clock">Clock Algorithm</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Number of Frames</label>
+                        <input type="number" class="form-input" id="numFrames" value="3" min="1" max="8">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Page Reference String (comma separated)</label>
+                        <input type="text" class="form-input" id="pageRefString" value="7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1">
+                    </div>
+                    <div class="flex-row">
+                        <button class="btn btn-primary"   onclick="runPageReplacement()" style="flex:1">▶ SIMULATE</button>
+                        <button class="btn btn-secondary" onclick="randomPageRef()">🎲 RANDOM</button>
+                    </div>
+                </div>
+
+                <div class="card" id="pageStatsCard">
+                    <div class="card-title">📈 STATISTICS</div>
+                    <div class="results-grid">
+                        <div class="result-box">
+                            <div class="result-value text-red"  id="pageFaults">-</div>
+                            <div class="result-label">Page Faults</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-value text-green" id="pageHits">-</div>
+                            <div class="result-label">Page Hits</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-value highlight"  id="hitRatio">-</div>
+                            <div class="result-label">Hit Ratio</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📚 ALGORITHM INFO</div>
+                    <div style="font-size:12px; color:var(--text-secondary); line-height:2;">
+                        <div><span class="text-green bold">FIFO:</span> Replace the oldest page. Simple but may suffer Belady's anomaly.</div>
+                        <div class="mt-10"><span class="highlight bold">LRU:</span> Replace the least recently used page. Good approximation of optimal.</div>
+                        <div class="mt-10"><span class="text-purple bold">Optimal:</span> Replace page not used for longest time. Theoretical best-case.</div>
+                        <div class="mt-10"><span class="text-orange bold">Clock:</span> Approximation of LRU using reference bits. Efficient and practical.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <div class="card-title">🎞️ PAGE REFERENCE SEQUENCE</div>
+                    <div class="page-sequence-display" id="pageSeqDisplay">
+                        <div style="color:var(--text-muted);font-size:12px;">Run simulation to see sequence</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">🗃️ FRAME STATE</div>
+                    <div class="page-frames" id="pageFrames">
+                        <div style="color:var(--text-muted);font-size:12px;">Run simulation to see frames</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">📋 STEP-BY-STEP TRACE</div>
+                    <div style="max-height:300px; overflow-y:auto;">
+                        <table class="process-table" id="pageTraceTable">
+                            <thead><tr id="pageTraceHead"></tr></thead>
+                            <tbody id="pageTraceBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ DISK SCHEDULER PAGE ============ -->
+    <div class="page" id="page-disk">
+        <div class="section-header">
+            <div class="section-title">💿 DISK SCHEDULER</div>
+            <div class="section-line"></div>
+            <span class="badge badge-blue">I/O MANAGEMENT</span>
+        </div>
+        <div class="two-col">
+            <div>
+                <div class="card">
+                    <div class="card-title">⚙️ CONFIGURATION</div>
+                    <div class="form-group">
+                        <label class="form-label">Algorithm</label>
+                        <select class="form-select" id="diskAlgo">
+                            <option value="fcfs">FCFS — First Come First Serve</option>
+                            <option value="sstf">SSTF — Shortest Seek Time First</option>
+                            <option value="scan">SCAN (Elevator)</option>
+                            <option value="cscan">C-SCAN (Circular SCAN)</option>
+                            <option value="look">LOOK</option>
+                            <option value="clook">C-LOOK</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Initial Head Position</label>
+                        <input type="number" class="form-input" id="diskHead" value="53" min="0" max="199">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Disk Size (tracks)</label>
+                        <input type="number" class="form-input" id="diskSize" value="200" min="50">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Request Queue (comma separated)</label>
+                        <input type="text" class="form-input" id="diskRequests" value="98,183,37,122,14,124,65,67">
+                    </div>
+                    <div class="flex-row">
+                        <button class="btn btn-primary"   onclick="runDiskScheduler()" style="flex:1">▶ SIMULATE</button>
+                        <button class="btn btn-secondary" onclick="randomDiskRequests()">🎲 RANDOM</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📈 RESULTS</div>
+                    <div class="results-grid">
+                        <div class="result-box">
+                            <div class="result-value text-orange" id="totalSeek">-</div>
+                            <div class="result-label">Total Seek</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-value highlight" id="avgSeek">-</div>
+                            <div class="result-label">Avg Seek Time</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-value text-green" id="diskOrder">-</div>
+                            <div class="result-label">Requests Served</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📋 SERVICE ORDER</div>
+                    <div id="diskServiceOrder" style="font-size:12px; color:var(--text-secondary); line-height:2.5;">
+                        Run the simulation to see service order.
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="card">
+                    <div class="card-title">📊 DISK HEAD MOVEMENT</div>
+                    <canvas id="diskCanvas" width="550" height="400"
+                        style="width:100%; background:rgba(0,0,0,0.4); border-radius:8px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ PROCESS MANAGER PAGE ============ -->
+    <div class="page" id="page-processes">
+        <div class="section-header">
+            <div class="section-title">⚙️ PROCESS MANAGER</div>
+            <div class="section-line"></div>
+            <span class="badge badge-green" id="procCountBadge">0 PROCESSES</span>
+        </div>
+
+        <div class="two-col">
+            <div class="card" style="grid-column: 1 / -1;">
+                <div class="card-title" style="justify-content:space-between;">
+                    <span>📋 ACTIVE PROCESSES</span>
+                    <div class="flex-row">
+                        <button class="btn btn-success"   onclick="forkProcess()">🌿 FORK</button>
+                        <button class="btn btn-secondary" onclick="addSysProcess()">➕ SYSTEM PROCESS</button>
+                        <button class="btn btn-danger"    onclick="killSelected()">💀 KILL SELECTED</button>
+                    </div>
+                </div>
+                <div class="process-list" id="processList"></div>
+            </div>
+        </div>
+
+        <div class="two-col mt-20">
+            <div class="card">
+                <div class="card-title">📊 PROCESS STATE DIAGRAM</div>
+                <div style="text-align:center;padding:20px;font-size:12px;color:var(--text-secondary);line-height:3;">
+                    <div style="display:flex;justify-content:center;align-items:center;gap:15px;flex-wrap:wrap;">
+                        <div style="padding:10px 18px;border-radius:8px;background:rgba(0,212,255,0.1);border:1px solid var(--accent-cyan);color:var(--accent-cyan);">NEW</div>
+                        <span style="font-size:20px">→</span>
+                        <div style="padding:10px 18px;border-radius:8px;background:rgba(255,215,0,0.1);border:1px solid var(--warning);color:var(--warning);">READY</div>
+                        <span style="font-size:20px">→</span>
+                        <div style="padding:10px 18px;border-radius:8px;background:rgba(0,255,136,0.1);border:1px solid var(--accent-green);color:var(--accent-green);">RUNNING</div>
+                        <span style="font-size:20px">↕</span>
+                        <div style="padding:10px 18px;border-radius:8px;background:rgba(148,163,184,0.1);border:1px solid var(--text-muted);color:var(--text-muted);">WAITING</div>
+                    </div>
+                    <div style="display:flex;justify-content:center;align-items:center;gap:15px;flex-wrap:wrap;margin-top:20px;">
+                        <div style="padding:10px 18px;border-radius:8px;background:rgba(255,71,87,0.1);border:1px solid var(--danger);color:var(--danger);">ZOMBIE</div>
+                        <span style="font-size:20px">←</span>
+                        <div style="padding:10px 18px;border-radius:8px;background:rgba(255,71,87,0.15);border:1px solid var(--danger);color:var(--danger);font-weight:bold;">TERMINATED</div>
+                        <span style="font-size:20px">←</span>
+                        <span style="font-size:18px;color:var(--accent-green);">RUNNING</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📈 PROCESS STATISTICS</div>
+                <div id="procStats" style="font-size:13px;color:var(--text-secondary);line-height:2.5;">
+                    <div class="flex-row" style="justify-content:space-between">
+                        <span>Running:</span><span class="text-green bold" id="psRunning">0</span>
+                    </div>
+                    <div class="flex-row" style="justify-content:space-between">
+                        <span>Waiting:</span><span class="text-yellow bold" id="psWaiting">0</span>
+                    </div>
+                    <div class="flex-row" style="justify-content:space-between">
+                        <span>Sleeping:</span><span class="text-muted bold" id="psSleeping">0</span>
+                    </div>
+                    <div class="flex-row" style="justify-content:space-between">
+                        <span>Zombie:</span><span class="text-red bold" id="psZombie">0</span>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="flex-row" style="justify-content:space-between">
+                        <span>Total CPU Time:</span><span class="highlight bold" id="psTotalCPU">0s</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ DEADLOCK PAGE ============ -->
+    <div class="page" id="page-deadlock">
+        <div class="section-header">
+            <div class="section-title">🔒 DEADLOCK DETECTOR</div>
+            <div class="section-line"></div>
+            <span class="badge badge-blue">BANKER'S ALGORITHM</span>
+        </div>
+        <div class="two-col">
+            <div>
+                <div class="card">
+                    <div class="card-title">⚙️ BANKER'S ALGORITHM</div>
+                    <div class="alert alert-info">
+                        <span>ℹ</span> Configure resources and process needs to check system safety.
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Number of Processes</label>
+                        <input type="number" class="form-input" id="bankProcs" value="5" min="1" max="10">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Number of Resource Types</label>
+                        <input type="number" class="form-input" id="bankRes" value="3" min="1" max="5">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Total Resources (e.g: 10 5 7)</label>
+                        <input type="text" class="form-input" id="bankTotal" value="10 5 7">
+                    </div>
+                    <button class="btn btn-primary" onclick="initBankers()" style="width:100%;margin-bottom:10px">
+                        ⚙️ INITIALIZE
+                    </button>
+                </div>
+
+                <div class="card" id="bankersMatrix" style="display:none">
+                    <div class="card-title">📊 ALLOCATION & MAX MATRIX</div>
+                    <div id="bankersTable"></div>
+                    <button class="btn btn-success" onclick="runBankers()" style="width:100%;margin-top:15px">
+                        🔍 CHECK SAFETY
+                    </button>
+                </div>
+
+                <div class="card" id="bankersResult" style="display:none">
+                    <div class="card-title">📋 RESULT</div>
+                    <div id="bankersResultContent"></div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <div class="card-title">🕸️ RESOURCE ALLOCATION GRAPH</div>
+                    <div class="rag-container" id="ragContainer">
+                        <!-- Arrow marker defined here so it is always available -->
+                        <svg id="ragSvg" width="100%" height="100%"
+                             style="position:absolute;top:0;left:0;z-index:1;">
+                            <defs>
+                                <marker id="arrow" markerWidth="10" markerHeight="7"
+                                        refX="10" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7"
+                                             fill="#7c3aed"/>
+                                </marker>
+                                <marker id="arrow-need" markerWidth="10" markerHeight="7"
+                                        refX="10" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7"
+                                             fill="#00d4ff"/>
+                                </marker>
+                            </defs>
+                        </svg>
+                        <div id="ragNodes"></div>
+                        <div style="position:absolute;bottom:10px;left:10px;font-size:10px;color:var(--text-muted);">
+                            <span style="color:var(--accent-purple)">● Processes</span> &nbsp;
+                            <span style="color:var(--accent-cyan)">■ Resources</span> &nbsp;
+                            <span style="color:#7c3aed">-- Allocation edge</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📚 DEADLOCK CONDITIONS</div>
+                    <div style="font-size:12px;color:var(--text-secondary);line-height:2.2;">
+                        <div><span class="text-red bold">1. Mutual Exclusion:</span> Resources cannot be shared simultaneously.</div>
+                        <div><span class="text-red bold">2. Hold &amp; Wait:</span> Process holds resources while waiting for more.</div>
+                        <div><span class="text-red bold">3. No Preemption:</span> Resources cannot be forcibly taken.</div>
+                        <div><span class="text-red bold">4. Circular Wait:</span> Circular chain of processes each waiting for the next.</div>
+                        <div class="divider"></div>
+                        <div><span class="text-green bold">Prevention:</span> Eliminate at least one of the four conditions.</div>
+                        <div><span class="highlight bold">Avoidance:</span> Banker's Algorithm — ensure safe state always.</div>
+                        <div><span class="text-orange bold">Detection:</span> Periodically check RAG for cycles.</div>
+                        <div><span class="text-purple bold">Recovery:</span> Kill process or preempt resource.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ TERMINAL PAGE ============ -->
+    <div class="page" id="page-terminal">
+        <div class="section-header">
+            <div class="section-title">💻 TERMINAL</div>
+            <div class="section-line"></div>
+            <span class="badge badge-green">SIM-SHELL v1.0</span>
+        </div>
+        <div class="two-col">
+            <div>
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dot" style="background:#ff5f56"></div>
+                        <div class="terminal-dot" style="background:#ffbd2e"></div>
+                        <div class="terminal-dot" style="background:#27c93f"></div>
+                        <span style="margin-left:10px;font-size:12px;color:#666">sim@os-sim-pro: ~</span>
+                    </div>
+                    <div class="terminal-body" id="terminalBody">
+                        <div class="terminal-line info">OS-SIM PRO Terminal v1.0</div>
+                        <div class="terminal-line info">Type 'help' for available commands.</div>
+                        <div class="terminal-line">─────────────────────────────────</div>
+                    </div>
+                    <div class="terminal-input-row">
+                        <span class="terminal-prompt">sim@os-sim-pro:~$ </span>
+                        <input type="text" class="terminal-input" id="terminalInput"
+                               placeholder="Type a command..."
+                               onkeydown="handleTerminal(event)">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <div class="card-title">📋 AVAILABLE COMMANDS</div>
+                    <div style="font-size:12px;color:var(--text-secondary);line-height:2.2;">
+                        <div><span class="text-green bold">help</span>           — Show all commands</div>
+                        <div><span class="text-green bold">ps</span>             — List all processes</div>
+                        <div><span class="text-green bold">top</span>            — Show CPU/Memory usage</div>
+                        <div><span class="text-green bold">free</span>           — Show memory information</div>
+                        <div><span class="text-green bold">kill [pid]</span>     — Kill a process by PID</div>
+                        <div><span class="text-green bold">fork [name]</span>    — Create a new process</div>
+                        <div><span class="text-green bold">mem</span>            — Show memory map</div>
+                        <div><span class="text-green bold">schedule [algo]</span>— Change scheduler</div>
+                        <div><span class="text-green bold">uname</span>          — System information</div>
+                        <div><span class="text-green bold">uptime</span>         — System uptime</div>
+                        <div><span class="text-green bold">clear</span>          — Clear terminal</div>
+                        <div><span class="text-green bold">ls</span>             — List files</div>
+                        <div><span class="text-green bold">date</span>           — Show current date/time</div>
+                        <div><span class="text-green bold">echo [text]</span>    — Print text</div>
+                        <div><span class="text-green bold">whoami</span>         — Current user</div>
+                        <div><span class="text-green bold">history</span>        — Command history</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!-- end #mainApp -->
+
+<!-- JS modules -->
+<script src="main.js"></script>
+<script src="cpu.js"></script>
+<script src="memory.js"></script>
+<script src="paging.js"></script>
+<script src="disk.js"></script>
+<script src="processes.js"></script>
+<script src="deadlock.js"></script>
+<script src="terminal.js"></script>
+</body>
+</html>
