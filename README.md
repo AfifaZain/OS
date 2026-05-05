@@ -7,7 +7,8 @@
 
 This is a comprehensive **web-based operating system simulator** built with vanilla JavaScript, HTML, and CSS. It provides interactive visualizations of core operating system concepts typically taught in university-level OS courses.
 
-**Location:** `C:\Users\ASUS\Downloads\afifa\`
+**Location:** `https://github.com/AfifaZain/OS`
+**Website:** `https://afifazain.github.io/OS/`
 
 ---
 
